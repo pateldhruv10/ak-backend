@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import { Role } from "../database/models";
 
 // MongoDB connection setup
-mongoose.connect('mongodb://adminUser1:securePa6473926498ssword@admin.127.0.0.1:27017/?tls=false', {
+mongoose.connect('mongodb://adminUser1:securePa6473926498ssword@127.0.0.1:27017/admin?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.0', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 } as any);
