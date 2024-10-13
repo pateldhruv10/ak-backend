@@ -1,6 +1,6 @@
 // NPM Imports
 import { Router } from 'express';
-import { createTransaction, deleteTransaction, listing } from '../controllers/transaction.controller';
+import { createTransaction, deleteTransaction, deleteTransactionByNumberAndID, getTransactionListingByNumber, listing } from '../controllers/transaction.controller';
 
 // Initializations
 const transactionRouter: Router = Router();
@@ -20,6 +20,19 @@ transactionRouter.get(
   [],
   listing
 );
+
+transactionRouter.get(
+  '/listing/number',
+  [],
+  getTransactionListingByNumber
+);
+
+transactionRouter.delete(
+  '/delete/:id/:number',
+  [],
+  deleteTransactionByNumberAndID
+);
+
 
 
 transactionRouter.delete(
