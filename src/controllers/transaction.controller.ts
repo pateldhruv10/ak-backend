@@ -4,7 +4,7 @@ import HttpStatusCodes from "http-status-codes";
 // import { Role, Transaction } from "../database/models";
 import { Transaction } from '../database/models/transaction.model';
 import mongoose from 'mongoose'; // Make sure mongoose is imported
-import { Role } from "../database/models";
+import { Employee, Role } from "../database/models";
 
 // MongoDB connection setup
 // mongoose.connect('mongodb://adminUser1:securePa6473926498ssword@127.0.0.1:27017/admin?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.0', {
@@ -12,13 +12,16 @@ import { Role } from "../database/models";
 //   useUnifiedTopology: true,
 // } as any);
 
-mongoose.connect('mongodb://adminUser1:securePa6473926498ssword@18.181.221.136:27017/admin?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.0', {
+// mongoose.connect('mongodb://adminUser1:securePa6473926498ssword@18.181.221.136:27017/admin?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.0', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// } as any);
+
+
+mongoose.connect('mongodb+srv://visicrux:pkinfotech365@pkinfotech.plpnc.mongodb.net/', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 } as any);
-
-
-
 
 // mongoose.connect('mongodb+srv://akinfotech:AK%40infotech365@akinfotech.btzd1oz.mongodb.net/akinfotech', {
 //   useNewUrlParser: true,
@@ -96,7 +99,20 @@ export async function listing(req: Request, res: Response) {
         data: transactions,
       });
     } else {
-      const transactions = await Transaction.find({ emp_id: user?.id });
+      let transactions = null;
+      if (user?.parent_user_id == 0) {
+        const employees = await Employee.findAll({
+          where: { parent_user_id: user?.id },
+        });
+        const employeeIds = employees.map((emp: any) => emp.id); // Extract IDs
+        employeeIds.push(user?.id);
+        transactions = await Transaction.find({
+          emp_id: { $in: employeeIds },
+        });
+      } else {
+        transactions = await Transaction.find({ emp_id: user?.id });
+      }
+      // const transactions = await Transaction.find({ emp_id: user?.id });
 
       return res.status(HttpStatusCodes.OK).json({
         message: "Success",

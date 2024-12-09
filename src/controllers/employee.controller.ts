@@ -61,7 +61,23 @@ export async function index(req: Request, res: Response) {
  */
 export async function listing(req: Request, res: Response) {
   try {
-    const rows = await Employee.findAll();
+    const user: any = req?.user;
+    let rows: any = null;
+    if(user.role_id == 1) {
+      rows = await Employee.findAll();
+    } else if(user.role_id != 1 && user?.parent_user_id ==0) {
+      rows = await Employee.findAll({
+        where: {
+          [Op.or]: [
+            { id: user?.id }, // Fetch logged-in user's info
+            { parent_user_id: user?.id }, // Fetch employees under the same parent_user_id
+          ],
+        },
+      });
+    } else {
+      rows = await Employee.findAll();
+    }
+    
     return res.status(HttpStatusCodes.OK).json({
       message: "Success",
       data: rows,

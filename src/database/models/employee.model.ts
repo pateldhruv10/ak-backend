@@ -27,6 +27,10 @@ Employee.init(
       allowNull: true,
       
     },
+    parent_user_id: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
     role_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
